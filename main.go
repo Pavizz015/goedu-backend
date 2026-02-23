@@ -20,7 +20,6 @@ type AuthResponse struct {
 	Token  string `json:"token,omitempty"`
 }
 
-// ВАЖНО: тут НЕТ Answer — значит в JSON его не будет
 type LessonPublic struct {
 	ID       int      `json:"id"`
 	Title    string   `json:"title"`
@@ -164,8 +163,6 @@ func meHandler(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// ------- LESSONS (без answer) -------
-
 func lessonsListHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -230,8 +227,6 @@ func lessonRouter(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewEncoder(w).Encode(l)
 }
 
-// ------- SUBMIT (answer берём из БД, фронту не отдаём) -------
-
 func submitHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -285,8 +280,6 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 
 	_ = json.NewEncoder(w).Encode(map[string]bool{"correct": isCorrect})
 }
-
-// ------- PROGRESS -------
 
 func progressHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {

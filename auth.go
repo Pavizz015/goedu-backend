@@ -10,7 +10,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var jwtSecret = []byte("CHANGE_ME_SUPER_SECRET") // потом поменяй на нормальный секрет
+var jwtSecret = []byte("CHANGE_ME_SUPER_SECRET")
 
 type Claims struct {
 	UserID int    `json:"user_id"`
@@ -72,7 +72,6 @@ func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		// Прокидываем user_id/email дальше в handlers через context
 		ctx := context.WithValue(r.Context(), ctxUserID, claims.UserID)
 		ctx = context.WithValue(ctx, ctxEmail, claims.Email)
 
