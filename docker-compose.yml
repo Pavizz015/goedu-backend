@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:16
+    container_name: goedu_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: goedu
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: goedu_api
+    depends_on:
+      - db
+    environment:
+      # ВАЖНО: это строка подключения — мы потом под неё подстроим db.go
+      DATABASE_URL: postgres://postgres:postgres@db:5432/goedu?sslmode=disable
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+volumes:
+  pgdata:

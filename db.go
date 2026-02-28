@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"log"
+	"os"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -10,17 +12,28 @@ import (
 var DB *pgxpool.Pool
 
 func InitDB() {
-	dsn := "postgres://postgres:postgres@localhost:5432/goedu"
+	dsn := os.Getenv("DATABASE_URL")
+	if dsn == "" {
+		dsn = "postgres://postgres:postgres@localhost:5432/goedu?sslmode=disable"
+	}
 
 	var err error
-	DB, err = pgxpool.New(context.Background(), dsn)
-	if err != nil {
-		log.Fatal(err)
+	for i := 1; i <= 30; i++ {
+		DB, err = pgxpool.New(context.Background(), dsn)
+		if err == nil {
+			ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+			err = DB.Ping(ctx)
+			cancel()
+		}
+
+		if err == nil {
+			log.Println("PostgreSQL connected")
+			return
+		}
+
+		log.Printf("PostgreSQL not ready (%d/30): %v", i, err)
+		time.Sleep(1 * time.Second)
 	}
 
-	if err = DB.Ping(context.Background()); err != nil {
-		log.Fatal(err)
-	}
-
-	log.Println("PostgreSQL connected")
+	log.Fatal("PostgreSQL connect failed:", err)
 }
