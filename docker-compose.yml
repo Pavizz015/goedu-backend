@@ -10,14 +10,20 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d goedu"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   api:
     build: .
     container_name: goedu_api
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
-      # ВАЖНО: это строка подключения — мы потом под неё подстроим db.go
       DATABASE_URL: postgres://postgres:postgres@db:5432/goedu?sslmode=disable
     ports:
       - "8080:8080"
