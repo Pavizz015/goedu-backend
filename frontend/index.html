@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>GoPaviz</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="form-box" id="register-box">
+            <h2>Регистрация</h2>
+            <input type="email" id="reg-email" placeholder="Email">
+            <input type="password" id="reg-password" placeholder="Пароль">
+            <button id="register-btn">Зарегистрироваться</button>
+            <p>Уже есть аккаунт? <span id="show-login">Войти</span></p>
+        </div>
+
+        <div class="form-box hidden" id="login-box">
+            <h2>Вход</h2>
+            <input type="email" id="login-email" placeholder="Email">
+            <input type="password" id="login-password" placeholder="Пароль">
+            <button id="login-btn">Войти</button>
+            <p>Нет аккаунта? <span id="show-register">Зарегистрироваться</span></p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
