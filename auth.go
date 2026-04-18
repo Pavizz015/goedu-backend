@@ -27,6 +27,28 @@ type AuthResponse struct {
 	Token  string `json:"token,omitempty"`
 }
 
+type UserResponse struct {
+	ID     int    `json:"id"`
+	Email  string `json:"email"`
+	XP     int    `json:"xp"`
+	Level  int    `json:"level"`
+	Title  string `json:"title"`
+	Streak int    `json:"streak"`
+}
+
+func calcLevel(xp int) (int, string) {
+	switch {
+	case xp >= 300:
+		return 4, "Senior"
+	case xp >= 150:
+		return 3, "Middle"
+	case xp >= 50:
+		return 2, "Junior"
+	default:
+		return 1, "Trainee"
+	}
+}
+
 func jwtSecret() []byte {
 	secret := os.Getenv("JWT_SECRET")
 	if secret == "" {
@@ -162,6 +184,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	if req.Email == "" || req.Password == "" {
 		http.Error(w, "email and password required", http.StatusBadRequest)
 		return
+
 	}
 
 	var (
@@ -182,6 +205,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid credentials", http.StatusUnauthorized)
 		return
 	}
+
+	updateStreak(r, userID)
 
 	token, err := generateToken(userID)
 	if err != nil {
@@ -204,22 +229,44 @@ func meHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var email string
-	var createdAt time.Time
-
+	var u UserResponse
 	err := DB.QueryRow(r.Context(),
-		`SELECT email, created_at FROM users WHERE id=$1`,
-		userID,
-	).Scan(&email, &createdAt)
+		`SELECT id, email, xp, streak FROM users WHERE id=$1`, userID,
+	).Scan(&u.ID, &u.Email, &u.XP, &u.Streak)
 	if err != nil {
 		http.Error(w, "db error", http.StatusInternalServerError)
 		return
 	}
 
+	u.Level, u.Title = calcLevel(u.XP)
+
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]any{
-		"id":         userID,
-		"email":      email,
-		"created_at": createdAt.Format(time.RFC3339),
-	})
+	json.NewEncoder(w).Encode(u)
+}
+
+func updateStreak(r *http.Request, userID int) {
+	today := time.Now().UTC().Truncate(24 * time.Hour)
+	var lastActivity *time.Time
+	DB.QueryRow(r.Context(),
+		`SELECT last_activity FROM users WHERE id=$1`, userID,
+	).Scan(&lastActivity)
+
+	if lastActivity == nil {
+		DB.Exec(r.Context(),
+			`UPDATE users SET streak=1, last_activity=$1 WHERE id=$2`, today, userID)
+		return
+	}
+
+	yesterday := today.AddDate(0, 0, -1)
+	last := lastActivity.UTC().Truncate(24 * time.Hour)
+
+	if last.Equal(today) {
+		return
+	} else if last.Equal(yesterday) {
+		DB.Exec(r.Context(),
+			`UPDATE users SET streak=streak+1, last_activity=$1 WHERE id=$2`, today, userID)
+	} else {
+		DB.Exec(r.Context(),
+			`UPDATE users SET streak=1, last_activity=$1 WHERE id=$2`, today, userID)
+	}
 }

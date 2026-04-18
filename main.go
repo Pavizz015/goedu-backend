@@ -69,11 +69,15 @@ func main() {
 	// swagger
 	mux.Handle("/swagger/", httpSwagger.WrapHandler)
 
+	// frontend
+	mux.Handle("/", http.FileServer(http.Dir("./frontend")))
+
 	// middlewares
 	var handler http.Handler = mux
 	handler = withCORS(handler)
 	handler = withLogging(handler)
 
 	log.Println("Server on :8080")
+	go openBrowser("http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", handler))
 }

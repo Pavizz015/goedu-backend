@@ -1,29 +1,246 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>GoPaviz</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GoEdu — Учи Go</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="auth-container">
-        <div class="form-box" id="register-box">
-            <h2>Регистрация</h2>
-            <input type="email" id="reg-email" placeholder="Email">
-            <input type="password" id="reg-password" placeholder="Пароль">
-            <button id="register-btn">Зарегистрироваться</button>
-            <p>Уже есть аккаунт? <span id="show-login">Войти</span></p>
-        </div>
 
-        <div class="form-box hidden" id="login-box">
-            <h2>Вход</h2>
-            <input type="email" id="login-email" placeholder="Email">
-            <input type="password" id="login-password" placeholder="Пароль">
-            <button id="login-btn">Войти</button>
-            <p>Нет аккаунта? <span id="show-register">Зарегистрироваться</span></p>
+<!-- AUTH PAGE -->
+<div id="page-auth" class="page active">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">Go</div>
+      <div class="auth-logo-text">Go<span>Edu</span></div>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Войти</button>
+      <button class="auth-tab" onclick="switchAuthTab('register')">Регистрация</button>
+    </div>
+    <div id="auth-error" class="auth-error"></div>
+    <div id="auth-form-login">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" id="login-email" placeholder="you@example.com" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Пароль</label>
+        <input class="form-input" type="password" id="login-password" placeholder="••••••••" />
+      </div>
+      <button class="btn-primary" id="btn-login" onclick="doLogin()">Войти</button>
+    </div>
+    <div id="auth-form-register" style="display:none">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" id="reg-email" placeholder="you@example.com" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Пароль</label>
+        <input class="form-input" type="password" id="reg-password" placeholder="Минимум 6 символов" />
+      </div>
+      <button class="btn-primary" id="btn-register" onclick="doRegister()">Создать аккаунт</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP PAGE -->
+<div id="page-app" class="page">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">Go</div>
+      <div class="sidebar-logo-text">Go<span>Edu</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-label">Меню</div>
+      <button class="nav-item active" onclick="showView('dashboard')">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M3 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm8 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zM3 12a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4zm8 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg>
+        Уроки
+      </button>
+      <button class="nav-item" onclick="showView('progress')">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
+        Прогресс
+      </button>
+      <button class="nav-item" onclick="showView('profile')">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+        Профиль
+      </button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="xp-block">
+        <div class="xp-header">
+          <span class="xp-title" id="user-title">Новичок</span>
+          <span class="xp-value" id="user-xp">0 XP</span>
         </div>
+        <div class="xp-bar-wrap">
+          <div class="xp-bar-fill" id="xp-bar"></div>
+        </div>
+        <div class="xp-meta">
+          <span id="user-level">Ур. 1</span>
+          <span id="user-streak">🔥 0 дней</span>
+        </div>
+      </div>
+      <div class="user-card">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <div class="user-info">
+          <div class="user-email" id="user-email-display">—</div>
+        </div>
+        <button class="btn-logout" onclick="doLogout()" title="Выйти">↗</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="content">
+    <!-- Dashboard View -->
+    <div id="view-dashboard" class="view active">
+      <div class="page-header">
+        <div class="page-title">Курс Go</div>
+        <div class="page-subtitle">Изучай язык программирования Go с нуля</div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <span class="stat-icon">📚</span>
+          <div class="stat-label">Всего уроков</div>
+          <div class="stat-value" id="stat-total">—</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🎯</span>
+          <div class="stat-label">Пройдено</div>
+          <div class="stat-value accent" id="stat-done">—</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">✅</span>
+          <div class="stat-label">Правильных ответов</div>
+          <div class="stat-value" id="stat-correct">—</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
+        <div class="section-title" style="margin-bottom:0;">Все уроки</div>
+        <input class="search-input" type="text" id="search-input" placeholder="🔍 Поиск по урокам..." oninput="filterLessons(this.value)" />
+      </div>
+      <div id="lessons-grid" class="lessons-grid">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <span>Загружаем уроки...</span>
+        </div>
+      </div>
     </div>
 
-    <script src="app.js"></script>
+    <!-- Lesson View -->
+    <div id="view-lesson" class="view">
+      <div class="lesson-view-header">
+        <button class="btn-back" onclick="showView('dashboard')">← Назад</button>
+        <div class="lesson-view-title" id="lesson-title-display">—</div>
+      </div>
+      <div class="theory-block">
+        <h3>Теория</h3>
+        <div id="lesson-theory-text">—</div>
+      </div>
+      <div class="quiz-block">
+        <h3>Задание</h3>
+        <div class="quiz-question" id="quiz-question-text">—</div>
+        <div class="quiz-options" id="quiz-options-list"></div>
+        <div id="quiz-result" class="quiz-result"></div>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:1.5rem;">
+          <button class="btn-submit" id="btn-submit" onclick="doSubmit()">Проверить</button>
+          <button class="btn-next" id="btn-next" onclick="goNextLesson()">Следующий урок →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress View -->
+    <div id="view-progress" class="view">
+      <div class="page-header">
+        <div class="page-title">Прогресс</div>
+        <div class="page-subtitle">История твоих ответов</div>
+      </div>
+      <div class="stat-card" style="margin-bottom:1.5rem;">
+        <div class="stat-label" style="margin-bottom:8px;">Общий прогресс</div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+        </div>
+        <div style="font-size:12px; color:var(--text3); margin-top:6px;" id="progress-pct">0%</div>
+      </div>
+      <div class="section-title">История ответов</div>
+      <div id="progress-list" class="progress-list">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <span>Загружаем данные...</span>
+        </div>
+      </div>
+    </div>
+    <!-- Profile View -->
+    <div id="view-profile" class="view">
+      <div class="page-header">
+        <div class="page-title">Профиль</div>
+        <div class="page-subtitle">Твоя статистика и достижения</div>
+      </div>
+
+      <div class="profile-hero">
+        <div class="profile-avatar-big" id="profile-avatar-big">?</div>
+        <div class="profile-info">
+          <div class="profile-email" id="profile-email">—</div>
+          <div class="profile-badge" id="profile-badge">Новичок</div>
+        </div>
+      </div>
+
+      <div class="stats-row" style="margin-bottom:1.5rem;">
+        <div class="stat-card">
+          <span class="stat-icon">⚡</span>
+          <div class="stat-label">XP</div>
+          <div class="stat-value accent" id="profile-xp">0</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🏆</span>
+          <div class="stat-label">Уровень</div>
+          <div class="stat-value" id="profile-level">1</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🔥</span>
+          <div class="stat-label">Стрик</div>
+          <div class="stat-value" id="profile-streak">0</div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <span class="stat-icon">📚</span>
+          <div class="stat-label">Пройдено уроков</div>
+          <div class="stat-value" id="profile-done">0</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">✅</span>
+          <div class="stat-label">Правильных</div>
+          <div class="stat-value" id="profile-correct">0</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🎯</span>
+          <div class="stat-label">Точность</div>
+          <div class="stat-value" id="profile-accuracy">0%</div>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:1.5rem;">До следующего уровня</div>
+      <div class="stat-card" style="margin-bottom:1.5rem;">
+        <div class="xp-header" style="margin-bottom:10px;">
+          <span id="profile-level-title" style="font-size:13px;color:var(--text2);">Прогресс</span>
+          <span id="profile-xp-next" style="font-family:var(--mono);font-size:13px;color:var(--accent);">0 / 50 XP</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="profile-xp-bar" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
 </body>
 </html>
