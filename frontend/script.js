@@ -46,8 +46,13 @@ async function doLogin() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password: pass })
     })
-    const data = await res.json()
-    if (!res.ok) throw new Error(data.message || data.error || 'Неверный email или пароль')
+    const text = await res.text()
+    let data = {}
+    try { data = JSON.parse(text) } catch {}
+    if (!res.ok) {
+      const msg = res.status === 401 ? 'Неверный email или пароль' : 'Ошибка входа'
+      throw new Error(msg)
+    }
     token = data.token
     userEmail = email
     localStorage.setItem('goedu_token', token)
@@ -59,7 +64,6 @@ async function doLogin() {
     btn.disabled = false; btn.textContent = 'Войти'
   }
 }
-
 async function doRegister() {
   const email = document.getElementById('reg-email').value.trim()
   const pass = document.getElementById('reg-password').value
@@ -73,11 +77,13 @@ async function doRegister() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password: pass })
     })
-    const data = await res.json()
+    const text = await res.text()
+    let data = {}
+    try { data = JSON.parse(text) } catch {}
     if (!res.ok) {
       const msg = res.status === 409 ? 'Этот email уже зарегистрирован' : 'Ошибка регистрации'
       throw new Error(msg)
-    }    
+    }
     token = data.token
     userEmail = email
     localStorage.setItem('goedu_token', token)
