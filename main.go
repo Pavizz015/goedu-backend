@@ -11,10 +11,10 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger/v2"
 )
 
-// lessonsRouter роутит:
-// GET  /lessons          список уроков
-// GET  /lessons/{id}      один урок
-// POST /lessons/{id}/submit  отправка ответа (требует Bearer токен)
+// lessonsRouter Routing:
+// GET  /lessons          list of lessons
+// GET  /lessons/{id}      one lesson
+// POST /lessons/{id}/submit  sending a response (requires Bearer token)
 func lessonsRouter(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/lessons" {
 		lessonsListHandler(w, r)
@@ -35,7 +35,7 @@ func lessonsRouter(w http.ResponseWriter, r *http.Request) {
 
 // @title           GoEdu API
 // @version         1.0
-// @description     Backend для обучения Go: регистрация, логин, уроки, прогресс.
+// @description     Desktop app for learn Go
 // @host            localhost:8080
 // @BasePath        /
 //
@@ -58,6 +58,8 @@ func main() {
 	mux.HandleFunc("/register", registerHandler)
 	mux.HandleFunc("/login", loginHandler)
 	mux.HandleFunc("/me", authMiddleware(meHandler))
+	mux.HandleFunc("/me/update", authMiddleware(updateProfileHandler))
+	mux.HandleFunc("/me/password", authMiddleware(changePasswordHandler))
 
 	// lessons
 	mux.HandleFunc("/lessons", lessonsRouter)
@@ -65,6 +67,9 @@ func main() {
 
 	// progress
 	mux.HandleFunc("/progress", authMiddleware(progressHandler))
+
+	// leaderboard
+	mux.HandleFunc("/leaderboard", authMiddleware(leaderboardHandler))
 
 	// swagger
 	mux.Handle("/swagger/", httpSwagger.WrapHandler)

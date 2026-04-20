@@ -29,9 +29,7 @@ CREATE TABLE IF NOT EXISTS progress (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ══════════════════════════════════════════
 --  SEED LESSONS
--- ══════════════════════════════════════════
 
 -- Урок 1
 INSERT INTO lessons (title, theory, question, options, answer, difficulty, category, xp_reward)

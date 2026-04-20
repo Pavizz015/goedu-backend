@@ -28,12 +28,16 @@ type AuthResponse struct {
 }
 
 type UserResponse struct {
-	ID     int    `json:"id"`
-	Email  string `json:"email"`
-	XP     int    `json:"xp"`
-	Level  int    `json:"level"`
-	Title  string `json:"title"`
-	Streak int    `json:"streak"`
+	ID          int    `json:"id"`
+	Email       string `json:"email"`
+	XP          int    `json:"xp"`
+	Level       int    `json:"level"`
+	Title       string `json:"title"`
+	Streak      int    `json:"streak"`
+	Username    string `json:"username"`
+	Bio         string `json:"bio"`
+	Country     string `json:"country"`
+	AvatarColor string `json:"avatar_color"`
 }
 
 func calcLevel(xp int) (int, string) {
@@ -158,7 +162,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 
 	token, err := generateToken(userID)
 	if err != nil {
-		http.Error(w, "token error", http.StatusInternalServerError)
+		http.Error(w, "email already exists", http.StatusConflict)
 		return
 	}
 
@@ -231,8 +235,8 @@ func meHandler(w http.ResponseWriter, r *http.Request) {
 
 	var u UserResponse
 	err := DB.QueryRow(r.Context(),
-		`SELECT id, email, xp, streak FROM users WHERE id=$1`, userID,
-	).Scan(&u.ID, &u.Email, &u.XP, &u.Streak)
+		`SELECT id, email, xp, streak, COALESCE(username,''), COALESCE(bio,''), COALESCE(country,''), COALESCE(avatar_color,'#00d4a0') FROM users WHERE id=$1`, userID,
+	).Scan(&u.ID, &u.Email, &u.XP, &u.Streak, &u.Username, &u.Bio, &u.Country, &u.AvatarColor)
 	if err != nil {
 		http.Error(w, "db error", http.StatusInternalServerError)
 		return
@@ -269,4 +273,99 @@ func updateStreak(r *http.Request, userID int) {
 		DB.Exec(r.Context(),
 			`UPDATE users SET streak=1, last_activity=$1 WHERE id=$2`, today, userID)
 	}
+}
+
+type UpdateProfileRequest struct {
+	Username    string `json:"username"`
+	Bio         string `json:"bio"`
+	Country     string `json:"country"`
+	AvatarColor string `json:"avatar_color"`
+}
+
+func updateProfileHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPut {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userIDAny := r.Context().Value(ctxUserIDKey)
+	userID, ok := userIDAny.(int)
+	if !ok || userID <= 0 {
+		http.Error(w, "unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	var req UpdateProfileRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "bad json", http.StatusBadRequest)
+		return
+	}
+
+	_, err := DB.Exec(r.Context(),
+		`UPDATE users SET username=$1, bio=$2, country=$3, avatar_color=$4 WHERE id=$5`,
+		req.Username, req.Bio, req.Country, req.AvatarColor, userID,
+	)
+	if err != nil {
+		http.Error(w, "db error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
+}
+
+type ChangePasswordRequest struct {
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
+}
+
+func changePasswordHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPut {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userIDAny := r.Context().Value(ctxUserIDKey)
+	userID, ok := userIDAny.(int)
+	if !ok || userID <= 0 {
+		http.Error(w, "unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	var req ChangePasswordRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "bad json", http.StatusBadRequest)
+		return
+	}
+
+	if len(req.NewPassword) < 6 {
+		http.Error(w, "password too short", http.StatusBadRequest)
+		return
+	}
+
+	var hash string
+	err := DB.QueryRow(r.Context(),
+		`SELECT password FROM users WHERE id=$1`, userID,
+	).Scan(&hash)
+	if err != nil {
+		http.Error(w, "user not found", http.StatusNotFound)
+		return
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(req.OldPassword)); err != nil {
+		http.Error(w, "wrong password", http.StatusUnauthorized)
+		return
+	}
+
+	newHash, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		http.Error(w, "hash error", http.StatusInternalServerError)
+		return
+	}
+
+	DB.Exec(r.Context(),
+		`UPDATE users SET password=$1 WHERE id=$2`, string(newHash), userID)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
 }
