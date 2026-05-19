@@ -7,7 +7,7 @@ let correctLessons = new Set()
 let currentLesson = null
 let selectedOption = null
 
-// ── INIT ──
+// INIT 
 window.addEventListener('DOMContentLoaded', () => {
   // язык: применяем сохранённый
   const savedLang = localStorage.getItem('goedu_lang') || 'ru'
@@ -17,7 +17,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if (token) enterApp()
 })
 
-// ── HLS ВИДЕО-ФОН ──
+// HLS ВИДЕО-ФОН 
 function initAuthVideo() {
   const video = document.getElementById('auth-bg-video')
   if (!video) return
@@ -34,7 +34,7 @@ function initAuthVideo() {
   video.play().catch(() => {})
 }
 
-// ── AUTH UI ──
+// AUTH UI 
 function scrollToForm() {
   const el = document.getElementById('auth-form-card')
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -119,7 +119,7 @@ function doLogout() {
   document.getElementById('view-profile').classList.add('active')
 }
 
-// ── APP ENTRY ──
+// APP ENTRY 
 function enterApp() {
   document.getElementById('page-auth').classList.remove('active')
   document.getElementById('page-app').classList.add('active')
@@ -130,7 +130,7 @@ function enterApp() {
   loadMe()
 }
 
-// ── XP / LEVEL ──
+// XP / LEVEL 
 async function loadMe() {
   try {
     const res = await fetch(`${API}/me`, { headers: { 'Authorization': `Bearer ${token}` } })
@@ -168,7 +168,7 @@ function showXPPopup(amount) {
   setTimeout(() => el.remove(), 1500)
 }
 
-// ── USER MENU ──
+// USER MENU 
 function toggleUserMenu() {
   const menu = document.getElementById('user-menu')
   if (menu) menu.classList.toggle('open')
@@ -185,7 +185,7 @@ document.addEventListener('click', e => {
   }
 })
 
-// ── NAVIGATION ──
+// NAVIGATION 
 function showView(name) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'))
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
@@ -207,8 +207,7 @@ function showView(name) {
   if (name === 'videos') renderVideos()
 }
 
-// ── ХЕЛПЕР ДЛЯ ПЕРЕВОДОВ КОНТЕНТА ──
-// Если есть text_en/text_kz/items_en/items_kz — берём по языку, иначе fallback на ru.
+// ХЕЛПЕР ДЛЯ ПЕРЕВОДОВ КОНТЕНТА 
 function tr(obj, baseKey) {
   if (!obj) return ''
   const lang = getLang()
@@ -216,7 +215,7 @@ function tr(obj, baseKey) {
   return obj[baseKey + '_' + lang] || obj[baseKey] || ''
 }
 
-// ── LESSONS ──
+// LESSONS 
 async function loadLessons() {
   try {
     const res = await fetch(`${API}/lessons`)
@@ -281,7 +280,7 @@ function openLesson(idx) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
 }
 
-// ── LESSON TABS ──
+// LESSON TABS 
 function switchLessonTab(name) {
   document.querySelectorAll('.lesson-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name))
   document.querySelectorAll('.lesson-tab-content').forEach(c => c.classList.remove('active'))
@@ -289,7 +288,7 @@ function switchLessonTab(name) {
   if (target) target.classList.add('active')
 }
 
-// ── ТЕОРИЯ ──
+// ТЕОРИЯ
 function renderTheory(lesson) {
   const container = document.getElementById('theory-content')
   const data = (window.LESSON_CONTENT && window.LESSON_CONTENT[lesson.id]) ? window.LESSON_CONTENT[lesson.id].theory : null
@@ -319,7 +318,7 @@ function formatTheory(text) {
   )
 }
 
-// ── ПРАКТИКА ──
+// ПРАКТИКА
 let practiceState = null
 
 function renderPractice(lesson) {
@@ -433,9 +432,8 @@ function checkPractice() {
   }
 }
 
-// ── КВИЗ ──
+// КВИЗ 
 function renderQuiz(lesson) {
-  // Локализованный вопрос/опции: если есть в LESSON_CONTENT — используем, иначе fallback на серверные (русские)
   const content = window.LESSON_CONTENT && window.LESSON_CONTENT[lesson.id]
   const lang = getLang()
   let question = lesson.question || '—'
@@ -517,7 +515,7 @@ function updateStats() {
   const sc = document.getElementById('stat-correct'); if (sc) sc.textContent = correctLessons.size
 }
 
-// ── PROGRESS ──
+// PROGRESS 
 async function loadProgress() {
   const list = document.getElementById('progress-list')
   if (list) list.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>...</span></div>'
@@ -557,7 +555,7 @@ async function loadProgress() {
   }
 }
 
-// ── PROFILE ──
+// PROFILE 
 async function loadProfile() {
   try {
     const res = await fetch(`${API}/me`, { headers: { 'Authorization': `Bearer ${token}` } })
@@ -607,7 +605,7 @@ function renderAchievements(xp, streak, done, correct) {
     </div>`).join('')
 }
 
-// ── DISCUSS ──
+// DISCUSS
 function loadDiscussPosts() {
   try { return JSON.parse(localStorage.getItem('goedu_discuss') || '[]') } catch { return [] }
 }
@@ -692,8 +690,7 @@ function formatTimeAgo(ts) {
   return new Date(ts).toLocaleDateString(getLang() === 'kz' ? 'ru' : getLang(), { day: '2-digit', month: 'short' })
 }
 
-// ── ВИДЕО ──
-// Микс англоязычных и русскоязычных видео. Видео на казахском по Go практически нет — это и есть аргумент платформы.
+// ВИДЕО
 const GO_VIDEOS = [
   { id: '446E-r0rXHI', title: 'Go in 100 Seconds',                              author: 'Fireship',          lang: 'EN' },
   { id: 'YS4e4q9oBaU', title: 'Learn Go Programming — Tutorial for Beginners', author: 'freeCodeCamp.org',  lang: 'EN' },
@@ -722,7 +719,7 @@ function renderVideos() {
   `).join('')
 }
 
-// ── CONFETTI ──
+// CONFETTI
 function launchConfetti() {
   const colors = ['#5ed29c', '#00ffbf', '#ffffff', '#a8d8a8', '#00a0ff']
   for (let i = 0; i < 80; i++) {
@@ -772,7 +769,7 @@ function closeVictory() {
   showView('dashboard')
 }
 
-// ── SEARCH & FILTER ──
+// SEARCH & FILTER 
 let activeCategory = 'all'
 function filterLessons(query) {
   const q = query.toLowerCase().trim()
@@ -793,7 +790,7 @@ function filterByCategory(cat, btn) {
   filterLessons(searchVal)
 }
 
-// ── LEADERBOARD ──
+// LEADERBOARD 
 async function loadLeaderboard() {
   const list = document.getElementById('leaderboard-list')
   list.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>...</span></div>'
@@ -819,7 +816,7 @@ async function loadLeaderboard() {
   } catch { list.innerHTML = `<div class="empty-state"><p>${t('leaderboard.load_err')}</p></div>` }
 }
 
-// ── SETTINGS ──
+// SETTINGS 
 let currentAvatarColor = '#5ed29c'
 async function loadSettings() {
   try {
@@ -879,7 +876,7 @@ async function changePassword() {
   } catch (e) { showToast('✗ ' + e.message) }
 }
 
-// ── TIMER ──
+// TIMER 
 let timerInterval = null
 let timerSeconds = 0
 function startLessonTimer() {
@@ -897,7 +894,7 @@ function updateTimerDisplay() {
   }
 }
 
-// ── UTILS ──
+// UTILS 
 function escHtml(str) {
   return String(str)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -915,7 +912,7 @@ document.addEventListener('keydown', e => {
   }
 })
 
-// ── OS табы на странице О языке ──
+// OS табы на странице О языке 
 function switchOSTab(os) {
   document.querySelectorAll('.os-tab').forEach(t => t.classList.toggle('active', t.dataset.os === os))
   document.querySelectorAll('.os-content').forEach(c => c.classList.remove('active'))

@@ -1546,9 +1546,8 @@ body {
   font-size: 12px;
   color: var(--text3);
 }
-/* ===================================================== */
+
 /*  ДОПОЛНЕНИЯ: вкладки урока, теория, практика, обсуждения */
-/* ===================================================== */
 
 /* ── LESSON TABS ── */
 .lesson-tabs {
@@ -1586,7 +1585,7 @@ body {
 .lesson-tab-content { display: none; }
 .lesson-tab-content.active { display: block; animation: fadeInUp 0.2s ease; }
 
-/* ── ТЕОРИЯ ── */
+/* ТЕОРИЯ */
 .theory-content {
   background: var(--card);
   border: 1px solid var(--border);
@@ -1647,7 +1646,7 @@ body {
 
 .th-code code { font-family: var(--mono); }
 
-/* ── ПРАКТИКА ── */
+/* ПРАКТИКА */
 .practice-task {
   background: var(--accent-dim);
   border: 1px solid rgba(0,212,160,0.25);
@@ -1774,7 +1773,7 @@ body {
   border: 1px solid rgba(255,90,106,0.25);
 }
 
-/* ── ОБСУЖДЕНИЯ: форма создания ── */
+/* ОБСУЖДЕНИЯ: форма создания  */
 .discuss-form-card {
   background: var(--card);
   border: 1px solid var(--border);
@@ -1810,9 +1809,7 @@ body {
 /* ── профиль: кнопка перехода ── */
 #view-profile .btn-primary { display: inline-flex; }
 
-/* ════════════════════════════════════════════════
-   CODENEST AUTH HERO — NEW DESIGN
-═══════════════════════════════════════════════════ */
+/* CODENEST AUTH HERO — NEW DESIGN */
 
 /* Видео-фон */
 .auth-bg-video {
@@ -2227,9 +2224,7 @@ body {
   display: none;
 }
 
-/* ════════════════════════════════════════════════
-   VIDEO CARDS
-═══════════════════════════════════════════════════ */
+/* VIDEO CARDS */
 .videos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -2326,9 +2321,7 @@ body {
   backdrop-filter: blur(6px);
 }
 
-/* ════════════════════════════════════════════════
-   ABOUT GO SECTION — dashboard intro
-═══════════════════════════════════════════════════ */
+/* ABOUT GO SECTION — dashboard intro */
 .about-go-section {
   margin-bottom: 2rem;
 }
@@ -2488,9 +2481,7 @@ body {
   letter-spacing: 0.02em;
 }
 
-/* ════════════════════════════════════════════════
-   ABOUT GO PAGE — install, IDE, commands
-═══════════════════════════════════════════════════ */
+/* ABOUT GO PAGE — install, IDE, commands */
 
 /* Кнопка тизера на дэшборде */
 .about-cta-btn {

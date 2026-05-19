@@ -831,7 +831,7 @@ const I18N = {
   }
 }
 
-// ── API ──
+// API 
 let currentLang = localStorage.getItem('goedu_lang') || 'ru'
 
 function t(key) {

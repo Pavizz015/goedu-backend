@@ -2,7 +2,7 @@
 // Темы синхронизированы с init.sql (20 уроков в БД).
 // Каждый урок: title_en/title_kz + theory[] + practice{} + quiz{}.
 // quiz.options идут в том же порядке что в БД (важно — answer индекс должен совпадать).
-
+ 
 window.LESSON_CONTENT = {
 
   1: {
