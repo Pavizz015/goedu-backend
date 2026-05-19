@@ -5,44 +5,111 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>GoEdu — Учи Go</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;700&family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="style.css" />
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
 </head>
 <body>
 
-<!-- AUTH PAGE -->
+<!-- AUTH PAGE (CodeNest стиль) -->
 <div id="page-auth" class="page active">
-  <div class="auth-box">
+  <video id="auth-bg-video" class="auth-bg-video" autoplay muted loop playsinline></video>
+  <div class="auth-bg-overlay"></div>
+  <div class="auth-bg-gradient-left"></div>
+  <div class="auth-bg-gradient-bottom"></div>
+
+  <div class="auth-grid">
+    <span style="left:25%"></span>
+    <span style="left:50%"></span>
+    <span style="left:75%"></span>
+  </div>
+
+  <svg class="auth-glow" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs><filter id="auth-glow-blur"><feGaussianBlur stdDeviation="50" /></filter></defs>
+    <ellipse cx="600" cy="200" rx="500" ry="80" fill="#5ed29c" opacity="0.35" filter="url(#auth-glow-blur)" />
+  </svg>
+
+  <header class="auth-header">
     <div class="auth-logo">
       <div class="auth-logo-icon">Go</div>
       <div class="auth-logo-text">Go<span>Edu</span></div>
     </div>
-    <div class="auth-tabs">
-      <button class="auth-tab active" onclick="switchAuthTab('login')">Войти</button>
-      <button class="auth-tab" onclick="switchAuthTab('register')">Регистрация</button>
+    <nav class="auth-nav">
+      <a href="#" class="auth-nav-link" onclick="scrollToForm(); return false;">PROJECTS</a>
+      <a href="#" class="auth-nav-link" onclick="scrollToForm(); return false;">BLOG</a>
+      <a href="#" class="auth-nav-link" onclick="scrollToForm(); return false;">ABOUT</a>
+      <a href="#" class="auth-nav-link" onclick="scrollToForm(); return false;">RESUME</a>
+    </nav>
+    <div class="lang-switcher">
+      <button class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" data-lang="kz" onclick="setLang('kz')">KZ</button>
     </div>
-    <div id="auth-error" class="auth-error"></div>
-    <div id="auth-form-login">
-      <div class="form-group">
-        <label class="form-label">Email</label>
-        <input class="form-input" type="email" id="login-email" placeholder="you@example.com" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Пароль</label>
-        <input class="form-input" type="password" id="login-password" placeholder="••••••••" />
-      </div>
-      <button class="btn-primary" id="btn-login" onclick="doLogin()">Войти</button>
+    <button class="auth-burger" onclick="toggleAuthMobileMenu()"><span></span><span></span><span></span></button>
+  </header>
+
+  <div class="auth-mobile-menu" id="auth-mobile-menu">
+    <button class="auth-mobile-close" onclick="toggleAuthMobileMenu()">×</button>
+    <div class="lang-switcher" style="margin-bottom:2rem;">
+      <button class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" data-lang="kz" onclick="setLang('kz')">KZ</button>
     </div>
-    <div id="auth-form-register" style="display:none">
-      <div class="form-group">
-        <label class="form-label">Email</label>
-        <input class="form-input" type="email" id="reg-email" placeholder="you@example.com" />
+    <button class="btn-primary" onclick="scrollToForm(); toggleAuthMobileMenu();" data-i18n="auth.cta">Начать обучение</button>
+  </div>
+
+  <div class="auth-hero">
+    <div class="auth-hero-left">
+      <div class="glass-card">
+        <div class="glass-card-inner">
+          <div class="glass-tag" data-i18n="auth.tag_year">[ 2026 ]</div>
+          <div class="glass-title"><span data-i18n="auth.tag_title">От практикующих инженеров</span></div>
+          <div class="glass-desc" data-i18n="auth.tag_desc">Современные подходы к Go</div>
+        </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Пароль</label>
-        <input class="form-input" type="password" id="reg-password" placeholder="Минимум 6 символов" />
+      <div class="auth-eyebrow" data-i18n="auth.eyebrow">Курс под реальный рынок</div>
+      <h1 class="auth-headline">
+        <span data-i18n="auth.headline_1">НАЧНИ КАРЬЕРУ В</span><br/>
+        <span data-i18n="auth.headline_2">РАЗРАБОТКЕ</span><span class="auth-headline-dot">.</span>
+      </h1>
+      <p class="auth-description" data-i18n="auth.description">Освой востребованный язык Go через интерактивные уроки, drag-and-drop практику и квизы.</p>
+      <button class="auth-cta" onclick="scrollToForm()">
+        <span data-i18n="auth.cta">Начать обучение</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+    <div class="auth-hero-right" id="auth-form-card">
+      <div class="auth-form-glass">
+        <div class="auth-tabs">
+          <button class="auth-tab active" onclick="switchAuthTab('login')" data-i18n="auth.signin">Войти</button>
+          <button class="auth-tab" onclick="switchAuthTab('register')" data-i18n="auth.signup">Регистрация</button>
+        </div>
+        <div id="auth-error" class="auth-error"></div>
+        <div id="auth-form-login">
+          <div class="form-group">
+            <label class="form-label" data-i18n="auth.email">Email</label>
+            <input class="form-input" type="email" id="login-email" placeholder="you@example.com" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="auth.password">Пароль</label>
+            <input class="form-input" type="password" id="login-password" placeholder="••••••••" />
+          </div>
+          <button class="btn-primary" id="btn-login" onclick="doLogin()" data-i18n="auth.login_btn">Войти</button>
+        </div>
+        <div id="auth-form-register" style="display:none">
+          <div class="form-group">
+            <label class="form-label" data-i18n="auth.email">Email</label>
+            <input class="form-input" type="email" id="reg-email" placeholder="you@example.com" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="auth.password">Пароль</label>
+            <input class="form-input" type="password" id="reg-password" data-i18n="auth.password_hint" data-i18n-attr="placeholder" placeholder="Минимум 6 символов" />
+          </div>
+          <button class="btn-primary" id="btn-register" onclick="doRegister()" data-i18n="auth.register_btn">Создать аккаунт</button>
+        </div>
       </div>
-      <button class="btn-primary" id="btn-register" onclick="doRegister()">Создать аккаунт</button>
     </div>
   </div>
 </div>
@@ -54,30 +121,52 @@
       <div class="sidebar-logo-icon">Go</div>
       <div class="sidebar-logo-text">Go<span>Edu</span></div>
     </div>
+
+    <div class="lang-switcher lang-switcher-sidebar">
+      <button class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" data-lang="kz" onclick="setLang('kz')">KZ</button>
+    </div>
+
     <nav class="sidebar-nav">
-      <div class="nav-label">Меню</div>
-      <button class="nav-item active" onclick="showView('dashboard')">
+      <div class="nav-label" data-i18n="nav.menu">Меню</div>
+      <button class="nav-item" onclick="showView('profile')">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/></svg>
+        <span data-i18n="nav.profile">Профиль</span>
+      </button>
+      <button class="nav-item" onclick="showView('dashboard')">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M3 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm8 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zM3 12a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4zm8 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg>
-        Уроки
+        <span data-i18n="nav.lessons">Уроки</span>
       </button>
       <button class="nav-item" onclick="showView('progress')">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
-        Прогресс
+        <span data-i18n="nav.progress">Прогресс</span>
       </button>
       <button class="nav-item" onclick="showView('leaderboard')">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-        Лидеры
+        <span data-i18n="nav.leaderboard">Лидеры</span>
+      </button>
+      <button class="nav-item" onclick="showView('discuss')">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H8l-4 4v-4H4a2 2 0 01-2-2V5z"/></svg>
+        <span data-i18n="nav.discuss">Обсуждения</span>
+      </button>
+      <button class="nav-item" onclick="showView('videos')">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm6 1.5v5l5-2.5-5-2.5z"/></svg>
+        <span data-i18n="nav.videos">Видео</span>
+      </button>
+      <button class="nav-item" onclick="showView('about')">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm.75 4a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM9 9h1.5v5H12v1H8v-1h1V10H8V9h1z"/></svg>
+        <span data-i18n="nav.about">О языке</span>
       </button>
     </nav>
+
     <div class="sidebar-bottom">
       <div class="xp-block">
         <div class="xp-header">
           <span class="xp-title" id="user-title">Beginner</span>
           <span class="xp-value" id="user-xp">0 XP</span>
         </div>
-        <div class="xp-bar-wrap">
-          <div class="xp-bar-fill" id="xp-bar"></div>
-        </div>
+        <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xp-bar"></div></div>
         <div class="xp-meta">
           <span id="user-level">Ур. 1</span>
           <span id="user-streak">🔥 0 дней</span>
@@ -91,235 +180,21 @@
         </div>
       </div>
       <div class="user-menu" id="user-menu">
-        <button class="user-menu-item" onclick="showView('profile'); closeUserMenu()">👤 Мой профиль</button>
-        <button class="user-menu-item" onclick="showView('settings'); closeUserMenu()">⚙️ Настройки</button>
-        <button class="user-menu-item" onclick="showView('courses'); closeUserMenu()">📚 Курсы</button>
-        <button class="user-menu-item" onclick="showView('discuss'); closeUserMenu()">💬 Обсуждения</button>
+        <button class="user-menu-item" onclick="showView('profile'); closeUserMenu()" data-i18n="menu.profile">👤 Мой профиль</button>
+        <button class="user-menu-item" onclick="showView('settings'); closeUserMenu()" data-i18n="menu.settings">⚙️ Настройки</button>
+        <button class="user-menu-item" onclick="showView('discuss'); closeUserMenu()" data-i18n="menu.discuss">💬 Обсуждения</button>
         <div style="border-top:1px solid var(--border); margin:4px 0;"></div>
-        <button class="user-menu-item danger" onclick="doLogout()">↗ Выйти</button>
+        <button class="user-menu-item danger" onclick="doLogout()" data-i18n="menu.logout">↗ Выйти</button>
       </div>
     </div>
   </aside>
 
   <main class="content">
 
-    <!-- Courses View -->
-    <div id="view-courses" class="view">
+    <div id="view-profile" class="view active">
       <div class="page-header">
-        <div class="page-title">Курсы</div>
-        <div class="page-subtitle">Другие курсы платформы GoEdu</div>
-      </div>
-      <div class="courses-grid">
-        <div class="course-card">
-          <div class="course-icon">🐘</div>
-          <div class="course-info">
-            <div class="course-title">PostgreSQL</div>
-            <div class="course-desc">Реляционные базы данных с нуля</div>
-            <div class="course-meta"><span class="course-badge soon">Скоро</span></div>
-          </div>
-        </div>
-        <div class="course-card">
-          <div class="course-icon">🐬</div>
-          <div class="course-info">
-            <div class="course-title">MySQL</div>
-            <div class="course-desc">Основы работы с MySQL</div>
-            <div class="course-meta"><span class="course-badge soon">Скоро</span></div>
-          </div>
-        </div>
-        <div class="course-card">
-          <div class="course-icon">🐍</div>
-          <div class="course-info">
-            <div class="course-title">Python</div>
-            <div class="course-desc">Программирование на Python</div>
-            <div class="course-meta"><span class="course-badge soon">Скоро</span></div>
-          </div>
-        </div>
-        <div class="course-card">
-          <div class="course-icon">☁️</div>
-          <div class="course-info">
-            <div class="course-title">Docker</div>
-            <div class="course-desc">Контейнеризация приложений</div>
-            <div class="course-meta"><span class="course-badge soon">Скоро</span></div>
-          </div>
-        </div>
-        <div class="course-card active-course">
-          <div class="course-icon">🐹</div>
-          <div class="course-info">
-            <div class="course-title">Go (Golang)</div>
-            <div class="course-desc">Ты сейчас проходишь этот курс</div>
-            <div class="course-meta"><span class="course-badge active">Активный</span></div>
-          </div>
-        </div>
-        <div class="course-card">
-          <div class="course-icon">⚡</div>
-          <div class="course-info">
-            <div class="course-title">Redis</div>
-            <div class="course-desc">In-memory база данных</div>
-            <div class="course-meta"><span class="course-badge soon">Скоро</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Discuss View -->
-    <div id="view-discuss" class="view">
-      <div class="page-header">
-        <div class="page-title">Обсуждения</div>
-        <div class="page-subtitle">Делитесь знаниями и задавайте вопросы</div>
-      </div>
-      <div class="discuss-list">
-        <div class="discuss-card">
-          <div class="discuss-avatar">А</div>
-          <div class="discuss-body">
-            <div class="discuss-header">
-              <span class="discuss-name">alex_go</span>
-              <span class="discuss-time">2 часа назад</span>
-            </div>
-            <div class="discuss-text">Кто-нибудь разобрался с горутинами? Никак не пойму как правильно использовать каналы для синхронизации</div>
-            <div class="discuss-footer">
-              <span class="discuss-tag">Горутины</span>
-              <span class="discuss-likes">❤️ 12</span>
-            </div>
-          </div>
-        </div>
-        <div class="discuss-card">
-          <div class="discuss-avatar">M</div>
-          <div class="discuss-body">
-            <div class="discuss-header">
-              <span class="discuss-name">maria_dev</span>
-              <span class="discuss-time">5 часов назад</span>
-            </div>
-            <div class="discuss-text">Совет для новичков: начните с изучения интерфейсов в Go — это ключевая концепция которая открывает всё остальное!</div>
-            <div class="discuss-footer">
-              <span class="discuss-tag">Советы</span>
-              <span class="discuss-likes">❤️ 34</span>
-            </div>
-          </div>
-        </div>
-        <div class="discuss-card">
-          <div class="discuss-avatar">K</div>
-          <div class="discuss-body">
-            <div class="discuss-header">
-              <span class="discuss-name">kz_coder</span>
-              <span class="discuss-time">вчера</span>
-            </div>
-            <div class="discuss-text">Прошёл все 20 уроков за один день! Go реально крутой язык, особенно понравилась простота синтаксиса</div>
-            <div class="discuss-footer">
-              <span class="discuss-tag">Успехи</span>
-              <span class="discuss-likes">❤️ 28</span>
-            </div>
-          </div>
-        </div>
-        <div class="discuss-card">
-          <div class="discuss-avatar">D</div>
-          <div class="discuss-body">
-            <div class="discuss-header">
-              <span class="discuss-name">docker_dan</span>
-              <span class="discuss-time">2 дня назад</span>
-            </div>
-            <div class="discuss-text">Вопрос: в чём разница между make и new в Go? Никак не могу запомнить когда что использовать</div>
-            <div class="discuss-footer">
-              <span class="discuss-tag">Вопросы</span>
-              <span class="discuss-likes">❤️ 8</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Dashboard View -->
-    <div id="view-dashboard" class="view active">
-      <div class="page-header">
-        <div class="page-title">Курс Go</div>
-        <div class="page-subtitle">Изучай язык программирования Go с нуля</div>
-      </div>
-      <div class="stats-row">
-        <div class="stat-card">
-          <span class="stat-icon">📚</span>
-          <div class="stat-label">Всего уроков</div>
-          <div class="stat-value" id="stat-total">—</div>
-        </div>
-        <div class="stat-card">
-          <span class="stat-icon">🎯</span>
-          <div class="stat-label">Пройдено</div>
-          <div class="stat-value accent" id="stat-done">—</div>
-        </div>
-        <div class="stat-card">
-          <span class="stat-icon">✅</span>
-          <div class="stat-label">Правильных ответов</div>
-          <div class="stat-value" id="stat-correct">—</div>
-        </div>
-      </div>
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
-        <div class="section-title" style="margin-bottom:0;">Все уроки</div>
-        <input class="search-input" type="text" id="search-input" placeholder="🔍 Поиск по урокам..." oninput="filterLessons(this.value)" />
-      </div>
-      <div class="category-filters" id="category-filters">
-        <button class="cat-btn active" onclick="filterByCategory('all', this)">Все</button>
-        <button class="cat-btn" onclick="filterByCategory('Основы', this)">Основы</button>
-        <button class="cat-btn" onclick="filterByCategory('Горутины', this)">Горутины</button>
-        <button class="cat-btn" onclick="filterByCategory('Типы', this)">Типы</button>
-        <button class="cat-btn" onclick="filterByCategory('Веб', this)">Веб</button>
-        <button class="cat-btn" onclick="filterByCategory('Стандартная библиотека', this)">Стд. библиотека</button>
-      </div>
-      <div id="lessons-grid" class="lessons-grid">
-        <div class="loading-state">
-          <div class="spinner"></div>
-          <span>Загружаем уроки...</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Lesson View -->
-    <div id="view-lesson" class="view">
-      <div class="lesson-view-header">
-        <button class="btn-back" onclick="showView('dashboard')">← Назад</button>
-        <div class="lesson-view-title" id="lesson-title-display">—</div>
-        <div class="lesson-timer" id="lesson-timer">⏱ 0с</div>
-      </div>
-      <div class="theory-block">
-        <h3>Теория</h3>
-        <div id="lesson-theory-text">—</div>
-      </div>
-      <div class="quiz-block">
-        <h3>Задание</h3>
-        <div class="quiz-question" id="quiz-question-text">—</div>
-        <div class="quiz-options" id="quiz-options-list"></div>
-        <div id="quiz-result" class="quiz-result"></div>
-        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:1.5rem;">
-          <button class="btn-submit" id="btn-submit" onclick="doSubmit()">Проверить</button>
-          <button class="btn-next" id="btn-next" onclick="goNextLesson()">Следующий урок →</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Progress View -->
-    <div id="view-progress" class="view">
-      <div class="page-header">
-        <div class="page-title">Прогресс</div>
-        <div class="page-subtitle">История твоих ответов</div>
-      </div>
-      <div class="stat-card" style="margin-bottom:1.5rem;">
-        <div class="stat-label" style="margin-bottom:8px;">Общий прогресс</div>
-        <div class="progress-bar-wrap">
-          <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
-        </div>
-        <div style="font-size:12px; color:var(--text3); margin-top:6px;" id="progress-pct">0%</div>
-      </div>
-      <div class="section-title">История ответов</div>
-      <div id="progress-list" class="progress-list">
-        <div class="loading-state">
-          <div class="spinner"></div>
-          <span>Загружаем данные...</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Profile View -->
-    <div id="view-profile" class="view">
-      <div class="page-header">
-        <div class="page-title">Профиль</div>
-        <div class="page-subtitle">Твоя статистика и достижения</div>
+        <div class="page-title" data-i18n="profile.title">Профиль</div>
+        <div class="page-subtitle" data-i18n="profile.subtitle">Твоя статистика и достижения</div>
       </div>
       <div class="profile-hero">
         <div class="profile-avatar-big" id="profile-avatar-big">?</div>
@@ -329,79 +204,452 @@
         </div>
       </div>
       <div class="stats-row" style="margin-bottom:1.5rem;">
-        <div class="stat-card">
-          <span class="stat-icon">⚡</span>
-          <div class="stat-label">XP</div>
-          <div class="stat-value accent" id="profile-xp">0</div>
-        </div>
-        <div class="stat-card">
-          <span class="stat-icon">🏆</span>
-          <div class="stat-label">Уровень</div>
-          <div class="stat-value" id="profile-level">1</div>
-        </div>
-        <div class="stat-card">
-          <span class="stat-icon">🔥</span>
-          <div class="stat-label">Стрик</div>
-          <div class="stat-value" id="profile-streak">0</div>
-        </div>
+        <div class="stat-card"><span class="stat-icon">⚡</span><div class="stat-label" data-i18n="profile.xp">XP</div><div class="stat-value accent" id="profile-xp">0</div></div>
+        <div class="stat-card"><span class="stat-icon">🏆</span><div class="stat-label" data-i18n="profile.level">Уровень</div><div class="stat-value" id="profile-level">1</div></div>
+        <div class="stat-card"><span class="stat-icon">🔥</span><div class="stat-label" data-i18n="profile.streak">Стрик</div><div class="stat-value" id="profile-streak">0</div></div>
       </div>
       <div class="stats-row">
-        <div class="stat-card">
-          <span class="stat-icon">📚</span>
-          <div class="stat-label">Пройдено уроков</div>
-          <div class="stat-value" id="profile-done">0</div>
-        </div>
-        <div class="stat-card">
-          <span class="stat-icon">✅</span>
-          <div class="stat-label">Правильных</div>
-          <div class="stat-value" id="profile-correct">0</div>
-        </div>
-        <div class="stat-card">
-          <span class="stat-icon">🎯</span>
-          <div class="stat-label">Точность</div>
-          <div class="stat-value" id="profile-accuracy">0%</div>
-        </div>
+        <div class="stat-card"><span class="stat-icon">📚</span><div class="stat-label" data-i18n="profile.completed">Пройдено уроков</div><div class="stat-value" id="profile-done">0</div></div>
+        <div class="stat-card"><span class="stat-icon">✅</span><div class="stat-label" data-i18n="profile.correct">Правильных</div><div class="stat-value" id="profile-correct">0</div></div>
+        <div class="stat-card"><span class="stat-icon">🎯</span><div class="stat-label" data-i18n="profile.accuracy">Точность</div><div class="stat-value" id="profile-accuracy">0%</div></div>
       </div>
-      <div class="section-title" style="margin-top:1.5rem;">Достижения</div>
+      <div class="section-title" style="margin-top:1.5rem;" data-i18n="profile.achievements">Достижения</div>
       <div class="achievements-grid" id="achievements-grid"></div>
-      <div class="section-title" style="margin-top:1.5rem;">До следующего уровня</div>
+      <div class="section-title" style="margin-top:1.5rem;" data-i18n="profile.next_level">До следующего уровня</div>
       <div class="stat-card" style="margin-bottom:1.5rem;">
         <div class="xp-header" style="margin-bottom:10px;">
           <span id="profile-level-title" style="font-size:13px;color:var(--text2);">Прогресс</span>
           <span id="profile-xp-next" style="font-family:var(--mono);font-size:13px;color:var(--accent);">0 / 50 XP</span>
         </div>
-        <div class="progress-bar-wrap">
-          <div class="progress-bar-fill" id="profile-xp-bar" style="width:0%"></div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="profile-xp-bar" style="width:0%"></div></div>
+      </div>
+      <div style="text-align:center; margin-top:1rem;">
+        <button class="btn-primary" style="width:auto; padding:12px 32px;" onclick="showView('dashboard')" data-i18n="profile.go_lessons">Перейти к урокам →</button>
+      </div>
+    </div>
+
+    <div id="view-discuss" class="view">
+      <div class="page-header">
+        <div class="page-title" data-i18n="discuss.title">Обсуждения</div>
+        <div class="page-subtitle" data-i18n="discuss.subtitle">Делись знаниями и задавай вопросы</div>
+      </div>
+      <div class="discuss-form-card">
+        <div class="discuss-form-title" data-i18n="discuss.create">Создать пост</div>
+        <textarea class="form-input" id="discuss-input" data-i18n="discuss.placeholder" data-i18n-attr="placeholder" placeholder="Что хочешь обсудить?" rows="3" style="resize:vertical; margin-bottom:10px;"></textarea>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <select class="form-input" id="discuss-tag-select" style="flex:1; min-width:140px; max-width:200px;">
+            <option value="general" data-i18n="discuss.tag_general">Общее</option>
+            <option value="question" data-i18n="discuss.tag_question">Вопрос</option>
+            <option value="advice" data-i18n="discuss.tag_advice">Совет</option>
+            <option value="wins" data-i18n="discuss.tag_wins">Успехи</option>
+            <option value="bug" data-i18n="discuss.tag_bug">Баг</option>
+          </select>
+          <button class="btn-primary" style="width:auto; padding:10px 24px;" onclick="createDiscussPost()" data-i18n="discuss.publish">Опубликовать</button>
+        </div>
+      </div>
+      <div id="discuss-list" class="discuss-list"></div>
+    </div>
+
+    <div id="view-videos" class="view">
+      <div class="page-header">
+        <div class="page-title" data-i18n="video.title">Видео-уроки</div>
+        <div class="page-subtitle" data-i18n="video.subtitle">Полезные YouTube-видео для изучения Go</div>
+      </div>
+      <div id="videos-grid" class="videos-grid"></div>
+    </div>
+
+    <!-- About Go: история, установка, настройка IDE, первая программа -->
+    <div id="view-about" class="view">
+      <div class="page-header">
+        <div class="page-title" data-i18n="about.page_title">О языке Go</div>
+        <div class="page-subtitle" data-i18n="about.page_subtitle">История, установка, настройка среды</div>
+      </div>
+
+      <!-- 1. История + факты -->
+      <div class="doc-section">
+        <div class="about-hero">
+          <div class="about-hero-text">
+            <div class="about-eyebrow" data-i18n="about.subtitle">Краткое знакомство</div>
+            <h2 class="about-title" data-i18n="about.title">О языке Go</h2>
+            <p class="about-history-text" data-i18n="about.history_text">Go появился в Google в 2007 году...</p>
+          </div>
+          <div class="about-facts">
+            <div class="about-fact"><span class="about-fact-icon">🎂</span><div class="about-fact-label" data-i18n="about.year_label">Создан</div><div class="about-fact-value" data-i18n="about.year_value">2009 · Google</div></div>
+            <div class="about-fact"><span class="about-fact-icon">👨‍💻</span><div class="about-fact-label" data-i18n="about.authors_label">Создатели</div><div class="about-fact-value" data-i18n="about.authors_value">Роб Пайк, Кен Томпсон, Роберт Гризмер</div></div>
+            <div class="about-fact"><span class="about-fact-icon">🐹</span><div class="about-fact-label" data-i18n="about.mascot_label">Маскот</div><div class="about-fact-value" data-i18n="about.mascot_value">Gopher 🐹</div></div>
+            <div class="about-fact"><span class="about-fact-icon">🏢</span><div class="about-fact-label" data-i18n="about.companies_label">Используют</div><div class="about-fact-value" data-i18n="about.companies_value">Google, Uber, Netflix, Cloudflare</div></div>
+          </div>
+        </div>
+        <div class="about-grid">
+          <div class="about-block">
+            <h3 class="about-block-title" data-i18n="about.why_title">Почему Go выбирают</h3>
+            <ul class="about-features">
+              <li data-i18n="about.why_1">Простой и минималистичный синтаксис</li>
+              <li data-i18n="about.why_2">Очень быстрая компиляция в один бинарник</li>
+              <li data-i18n="about.why_3">Встроенная многопоточность через горутины</li>
+              <li data-i18n="about.why_4">Сборщик мусора без накладных расходов</li>
+              <li data-i18n="about.why_5">Большая стандартная библиотека</li>
+            </ul>
+          </div>
+          <div class="about-block">
+            <h3 class="about-block-title" data-i18n="about.where_title">Где применяется</h3>
+            <p class="about-where-text" data-i18n="about.where_text">Go стал фундаментом современной cloud-инфраструктуры...</p>
+            <div class="about-projects">
+              <span class="about-project">Docker</span>
+              <span class="about-project">Kubernetes</span>
+              <span class="about-project">Terraform</span>
+              <span class="about-project">CockroachDB</span>
+              <span class="about-project">Caddy</span>
+              <span class="about-project">Hugo</span>
+              <span class="about-project">etcd</span>
+              <span class="about-project">InfluxDB</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Установка Go -->
+      <div class="doc-section">
+        <div class="doc-section-head">
+          <div class="doc-section-icon">
+            <svg viewBox="0 0 60 60" fill="none">
+              <path d="M14 25c0-2 1.5-3.5 3.5-3.5h7.7c0 0-1.5 3-1.5 3H17.5c-.3 0-.5.2-.5.5s.2.5.5.5h7c-.3 0-1.3 3-1.3 3H17.5c-2 0-3.5-1.5-3.5-3.5z" fill="#00ADD8"/>
+              <circle cx="40" cy="30" r="14" fill="#00ADD8"/>
+              <circle cx="36" cy="27" r="3" fill="#fff"/>
+              <circle cx="36" cy="27" r="1.2" fill="#000"/>
+              <circle cx="44" cy="27" r="3" fill="#fff"/>
+              <circle cx="44" cy="27" r="1.2" fill="#000"/>
+            </svg>
+          </div>
+          <div>
+            <h2 class="doc-h2" data-i18n="about.install_title">Установка Go</h2>
+            <p class="doc-lead" data-i18n="about.install_intro">Go устанавливается на Windows, macOS и Linux...</p>
+          </div>
+        </div>
+
+        <!-- Табы OS -->
+        <div class="os-tabs">
+          <button class="os-tab active" data-os="win" onclick="switchOSTab('win')">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M2 4l9-1.2V11H2V4zm10-1.3l11-1.5V11H12V2.7zM2 12h9v7.2L2 18V12zm10 0h11v8.8l-11-1.5V12z"/></svg>
+            <span data-i18n="about.win_title">Windows</span>
+          </button>
+          <button class="os-tab" data-os="mac" onclick="switchOSTab('mac')">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M18.7 17.5c-.6 1.3-.9 1.9-1.6 3-1 1.6-2.5 3.7-4.4 3.7-1.6 0-2.1-1.1-4.3-1-2.3 0-2.7 1-4.3 1-1.9 0-3.3-1.9-4.3-3.5-2.8-4.4-3.1-9.6-1.4-12.4 1.2-2 3.2-3.2 5-3.2 1.9 0 3.1 1 4.7 1 1.5 0 2.4-1 4.6-1 1.6 0 3.4.9 4.6 2.4-4 2.2-3.4 8 1.4 9.9zM12.5 4.3c.8-1 1.4-2.4 1.2-3.8-1.2.1-2.7.9-3.5 1.9-.7.9-1.4 2.4-1.2 3.7 1.4.1 2.7-.8 3.5-1.8z"/></svg>
+            <span data-i18n="about.mac_title">macOS</span>
+          </button>
+          <button class="os-tab" data-os="linux" onclick="switchOSTab('linux')">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2c-2 0-3.5 1.5-3.5 4 0 1 .3 1.7.5 2.3-2 1-3 3.3-3 5.7 0 1.5.5 3 1 4-1 1-1 2-1 3 0 1.5 1.5 2 3 2h6c1.5 0 3-.5 3-2 0-1 0-2-1-3 .5-1 1-2.5 1-4 0-2.4-1-4.7-3-5.7.2-.6.5-1.3.5-2.3 0-2.5-1.5-4-3.5-4zm-1.5 4c.3-.4.7-.4 1.5-.4s1.2 0 1.5.4c0 .8-.7 1.4-1.5 1.4s-1.5-.6-1.5-1.4z"/></svg>
+            <span data-i18n="about.linux_title">Linux</span>
+          </button>
+        </div>
+
+        <!-- Windows -->
+        <div class="os-content active" id="os-win">
+          <ol class="doc-steps">
+            <li><span class="step-num">1</span><span data-i18n="about.win_s1">Зайди на go.dev/dl/ и скачай .msi-инсталлятор.</span></li>
+            <li><span class="step-num">2</span><span data-i18n="about.win_s2">Запусти установщик. Установи Go в стандартный каталог.</span></li>
+            <li><span class="step-num">3</span><span data-i18n="about.win_s3">Открой PowerShell или CMD и проверь установку:</span></li>
+          </ol>
+          <pre class="doc-code"><code>go version</code></pre>
+          <p class="doc-note" data-i18n="about.check_caption">Если видишь "go version go1.22 ..." — Go установлен правильно.</p>
+        </div>
+
+        <!-- macOS -->
+        <div class="os-content" id="os-mac">
+          <ol class="doc-steps">
+            <li><span class="step-num">1</span><span data-i18n="about.mac_s1">Самый простой способ — через Homebrew:</span></li>
+          </ol>
+          <pre class="doc-code"><code>brew install go</code></pre>
+          <ol class="doc-steps" start="2">
+            <li><span class="step-num">2</span><span data-i18n="about.mac_s2">Альтернатива — скачать .pkg с go.dev/dl/ и запустить.</span></li>
+            <li><span class="step-num">3</span><span data-i18n="about.mac_s3">Проверка установки:</span></li>
+          </ol>
+          <pre class="doc-code"><code>go version</code></pre>
+          <p class="doc-note" data-i18n="about.check_caption">Если видишь "go version go1.22 ..." — Go установлен правильно.</p>
+        </div>
+
+        <!-- Linux -->
+        <div class="os-content" id="os-linux">
+          <ol class="doc-steps">
+            <li><span class="step-num">1</span><span data-i18n="about.linux_s1">Скачай tar.gz архив с go.dev/dl/ и распакуй в /usr/local:</span></li>
+          </ol>
+          <pre class="doc-code"><code>sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf go1.22.linux-amd64.tar.gz</code></pre>
+          <ol class="doc-steps" start="2">
+            <li><span class="step-num">2</span><span data-i18n="about.linux_s2">Добавь Go в PATH через ~/.bashrc или ~/.zshrc:</span></li>
+          </ol>
+          <pre class="doc-code"><code>export PATH=$PATH:/usr/local/go/bin</code></pre>
+          <ol class="doc-steps" start="3">
+            <li><span class="step-num">3</span><span data-i18n="about.linux_s3">Перезагрузи терминал и проверь:</span></li>
+          </ol>
+          <pre class="doc-code"><code>source ~/.bashrc
+go version</code></pre>
+          <p class="doc-note" data-i18n="about.check_caption">Если видишь "go version go1.22 ..." — Go установлен правильно.</p>
+        </div>
+      </div>
+
+      <!-- 3. VS Code -->
+      <div class="doc-section">
+        <div class="doc-section-head">
+          <div class="doc-section-icon">
+            <svg viewBox="0 0 60 60" fill="none">
+              <path d="M44 6L20 28 11 21l-5 4 14 14 5 4L51 22V10c0-3-3-5-7-4z" fill="#007ACC"/>
+              <path d="M44 6L20 28l4 4 24-22-4-4z" fill="#0098DB"/>
+              <path d="M11 21l5 4 4-4-5-4-4 4zM20 28l4 4 5-4-4-4-5 4z" fill="#1F9CF0" opacity="0.7"/>
+            </svg>
+          </div>
+          <div>
+            <h2 class="doc-h2" data-i18n="about.vscode_title">Настройка VS Code</h2>
+            <p class="doc-lead" data-i18n="about.vscode_intro">VS Code — самый популярный редактор для Go...</p>
+          </div>
+        </div>
+        <ol class="doc-steps">
+          <li><span class="step-num">1</span><span data-i18n="about.vscode_s1">Скачай VS Code с code.visualstudio.com и установи.</span></li>
+          <li><span class="step-num">2</span><span data-i18n="about.vscode_s2">Открой VS Code, нажми Ctrl+Shift+X — откроется панель расширений.</span></li>
+          <li><span class="step-num">3</span><span data-i18n="about.vscode_s3">Найди расширение Go от Go Team at Google и установи.</span></li>
+          <li><span class="step-num">4</span><span data-i18n="about.vscode_s4">Открой любой .go файл — VS Code предложит установить gopls, dlv и другие. Нажми Install All.</span></li>
+          <li><span class="step-num">5</span><span data-i18n="about.vscode_s5">Готово — автодополнение, переходы, отладчик и автоформатирование при сохранении.</span></li>
+        </ol>
+      </div>
+
+      <!-- 4. GoLand -->
+      <div class="doc-section">
+        <div class="doc-section-head">
+          <div class="doc-section-icon">
+            <svg viewBox="0 0 60 60" fill="none">
+              <rect x="6" y="6" width="48" height="48" rx="6" fill="url(#goland-grad)"/>
+              <defs>
+                <linearGradient id="goland-grad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#0EBEFF"/>
+                  <stop offset="0.5" stop-color="#0FF798"/>
+                  <stop offset="1" stop-color="#CDF564"/>
+                </linearGradient>
+              </defs>
+              <text x="30" y="38" text-anchor="middle" fill="#070b0a" font-family="Inter,sans-serif" font-weight="800" font-size="16">G</text>
+            </svg>
+          </div>
+          <div>
+            <h2 class="doc-h2" data-i18n="about.goland_title">Настройка GoLand</h2>
+            <p class="doc-lead" data-i18n="about.goland_intro">GoLand — IDE от JetBrains специально для Go...</p>
+          </div>
+        </div>
+        <ol class="doc-steps">
+          <li><span class="step-num">1</span><span data-i18n="about.goland_s1">Скачай GoLand с jetbrains.com/go. Студенты — через JetBrains Student Pack.</span></li>
+          <li><span class="step-num">2</span><span data-i18n="about.goland_s2">Запусти установщик, прими лицензию.</span></li>
+          <li><span class="step-num">3</span><span data-i18n="about.goland_s3">При первом запуске GoLand сам найдёт Go и подхватит GOPATH/GOROOT.</span></li>
+          <li><span class="step-num">4</span><span data-i18n="about.goland_s4">Создай новый проект: File → New → Project → Go.</span></li>
+          <li><span class="step-num">5</span><span data-i18n="about.goland_s5">Всё готово — GoLand сам подскажет когда нужны модули и отформатирует код.</span></li>
+        </ol>
+      </div>
+
+      <!-- 5. Первая программа -->
+      <div class="doc-section">
+        <div class="doc-section-head">
+          <div class="doc-section-icon"><span style="font-size:32px">▶</span></div>
+          <div>
+            <h2 class="doc-h2" data-i18n="about.first_title">Первая программа</h2>
+            <p class="doc-lead" data-i18n="about.first_intro">Создай файл main.go и вставь этот код:</p>
+          </div>
+        </div>
+        <pre class="doc-code"><code>package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, World!")
+}</code></pre>
+        <p class="doc-note" data-i18n="about.first_run">Запусти из терминала:</p>
+        <pre class="doc-code"><code>go run main.go</code></pre>
+        <p class="doc-note" data-i18n="about.first_result">Должно вывести: Hello, World!</p>
+      </div>
+
+      <!-- 6. Команды -->
+      <div class="doc-section">
+        <div class="doc-section-head">
+          <div class="doc-section-icon"><span style="font-size:30px">⌨</span></div>
+          <div>
+            <h2 class="doc-h2" data-i18n="about.cmd_title">Основные команды Go</h2>
+          </div>
+        </div>
+        <div class="cmd-list">
+          <div class="cmd-row"><code class="cmd-name">go run main.go</code><span class="cmd-desc" data-i18n="about.cmd_run">Запустить программу без сборки бинарника</span></div>
+          <div class="cmd-row"><code class="cmd-name">go build</code><span class="cmd-desc" data-i18n="about.cmd_build">Скомпилировать в исполняемый файл</span></div>
+          <div class="cmd-row"><code class="cmd-name">go mod init project</code><span class="cmd-desc" data-i18n="about.cmd_mod_init">Создать модуль (новый проект)</span></div>
+          <div class="cmd-row"><code class="cmd-name">go mod tidy</code><span class="cmd-desc" data-i18n="about.cmd_mod_tidy">Подтянуть/убрать зависимости в go.mod</span></div>
+          <div class="cmd-row"><code class="cmd-name">go get github.com/...</code><span class="cmd-desc" data-i18n="about.cmd_get">Установить стороннюю библиотеку</span></div>
+          <div class="cmd-row"><code class="cmd-name">gofmt -w .</code><span class="cmd-desc" data-i18n="about.cmd_fmt">Отформатировать код по стандарту Go</span></div>
+          <div class="cmd-row"><code class="cmd-name">go test ./...</code><span class="cmd-desc" data-i18n="about.cmd_test">Запустить тесты</span></div>
+          <div class="cmd-row"><code class="cmd-name">go vet ./...</code><span class="cmd-desc" data-i18n="about.cmd_vet">Проверить код на подозрительные конструкции</span></div>
+        </div>
+      </div>
+
+      <!-- 7. Ссылки -->
+      <div class="doc-section">
+        <h2 class="doc-h2" data-i18n="about.docs_title">Полезные ссылки</h2>
+        <div class="docs-links">
+          <a class="docs-link" href="https://go.dev" target="_blank" rel="noopener">
+            <span class="docs-link-icon">🌐</span>
+            <div><div class="docs-link-title" data-i18n="about.docs_official">Официальный сайт</div><div class="docs-link-url">go.dev</div></div>
+          </a>
+          <a class="docs-link" href="https://go.dev/tour/" target="_blank" rel="noopener">
+            <span class="docs-link-icon">🎓</span>
+            <div><div class="docs-link-title" data-i18n="about.docs_tour">Tour of Go</div><div class="docs-link-url">go.dev/tour</div></div>
+          </a>
+          <a class="docs-link" href="https://go.dev/play/" target="_blank" rel="noopener">
+            <span class="docs-link-icon">▶</span>
+            <div><div class="docs-link-title" data-i18n="about.docs_playground">Go Playground</div><div class="docs-link-url">go.dev/play</div></div>
+          </a>
+          <a class="docs-link" href="https://pkg.go.dev" target="_blank" rel="noopener">
+            <span class="docs-link-icon">📚</span>
+            <div><div class="docs-link-title" data-i18n="about.docs_pkg">pkg.go.dev</div><div class="docs-link-url">pkg.go.dev</div></div>
+          </a>
         </div>
       </div>
     </div>
 
-    <!-- Leaderboard View -->
+    <div id="view-dashboard" class="view">
+      <div class="page-header">
+        <div class="page-title" data-i18n="dashboard.title">Курс Go</div>
+        <div class="page-subtitle" data-i18n="dashboard.subtitle">Изучай язык программирования Go с нуля</div>
+      </div>
+
+      <!-- О языке Go: тизер с кнопкой на полную страницу -->
+      <div class="about-go-section">
+        <div class="about-hero">
+          <div class="about-hero-text">
+            <div class="about-eyebrow" data-i18n="about.subtitle">Краткое знакомство</div>
+            <h2 class="about-title" data-i18n="about.title">О языке Go</h2>
+            <p class="about-history-text" data-i18n="about.history_text">Go появился в Google в 2007 году...</p>
+            <button class="about-cta-btn" onclick="showView('about')">
+              <span data-i18n="about.cta_more">Узнать больше о Go →</span>
+            </button>
+          </div>
+          <div class="about-facts">
+            <div class="about-fact">
+              <span class="about-fact-icon">🎂</span>
+              <div class="about-fact-label" data-i18n="about.year_label">Создан</div>
+              <div class="about-fact-value" data-i18n="about.year_value">2009 · Google</div>
+            </div>
+            <div class="about-fact">
+              <span class="about-fact-icon">👨‍💻</span>
+              <div class="about-fact-label" data-i18n="about.authors_label">Создатели</div>
+              <div class="about-fact-value" data-i18n="about.authors_value">Роб Пайк, Кен Томпсон, Роберт Гризмер</div>
+            </div>
+            <div class="about-fact">
+              <span class="about-fact-icon">🐹</span>
+              <div class="about-fact-label" data-i18n="about.mascot_label">Маскот</div>
+              <div class="about-fact-value" data-i18n="about.mascot_value">Gopher 🐹</div>
+            </div>
+            <div class="about-fact">
+              <span class="about-fact-icon">🏢</span>
+              <div class="about-fact-label" data-i18n="about.companies_label">Используют</div>
+              <div class="about-fact-value" data-i18n="about.companies_value">Google, Uber, Netflix, Cloudflare</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card"><span class="stat-icon">📚</span><div class="stat-label" data-i18n="dashboard.stat_total">Всего уроков</div><div class="stat-value" id="stat-total">—</div></div>
+        <div class="stat-card"><span class="stat-icon">🎯</span><div class="stat-label" data-i18n="dashboard.stat_done">Пройдено</div><div class="stat-value accent" id="stat-done">—</div></div>
+        <div class="stat-card"><span class="stat-icon">✅</span><div class="stat-label" data-i18n="dashboard.stat_correct">Правильных ответов</div><div class="stat-value" id="stat-correct">—</div></div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
+        <div class="section-title" style="margin-bottom:0;" data-i18n="dashboard.all_lessons">Все уроки</div>
+        <input class="search-input" type="text" id="search-input" data-i18n="dashboard.search" data-i18n-attr="placeholder" placeholder="🔍 Поиск по урокам..." oninput="filterLessons(this.value)" />
+      </div>
+      <div class="category-filters" id="category-filters">
+        <button class="cat-btn active" onclick="filterByCategory('all', this)" data-i18n="dashboard.cat_all">Все</button>
+        <button class="cat-btn" onclick="filterByCategory('Основы', this)" data-i18n="dashboard.cat_basics">Основы</button>
+        <button class="cat-btn" onclick="filterByCategory('Горутины', this)" data-i18n="dashboard.cat_goroutines">Горутины</button>
+        <button class="cat-btn" onclick="filterByCategory('Типы', this)" data-i18n="dashboard.cat_types">Типы</button>
+        <button class="cat-btn" onclick="filterByCategory('Веб', this)" data-i18n="dashboard.cat_web">Веб</button>
+        <button class="cat-btn" onclick="filterByCategory('Стандартная библиотека', this)" data-i18n="dashboard.cat_stdlib">Стд. библиотека</button>
+      </div>
+      <div id="lessons-grid" class="lessons-grid">
+        <div class="loading-state"><div class="spinner"></div><span>...</span></div>
+      </div>
+    </div>
+
+    <div id="view-lesson" class="view">
+      <div class="lesson-view-header">
+        <button class="btn-back" onclick="showView('dashboard')" data-i18n="lesson.back">← Назад</button>
+        <div class="lesson-view-title" id="lesson-title-display">—</div>
+        <div class="lesson-timer" id="lesson-timer">⏱ 0с</div>
+      </div>
+      <div class="lesson-tabs">
+        <button class="lesson-tab active" data-tab="theory" onclick="switchLessonTab('theory')" data-i18n="lesson.theory">📖 Теория</button>
+        <button class="lesson-tab" data-tab="practice" onclick="switchLessonTab('practice')" data-i18n="lesson.practice">⌨ Практика</button>
+        <button class="lesson-tab" data-tab="quiz" onclick="switchLessonTab('quiz')" data-i18n="lesson.quiz">❓ Квиз</button>
+      </div>
+      <div id="lesson-tab-theory" class="lesson-tab-content active">
+        <div class="theory-content" id="theory-content"><p style="color:var(--text3)">Загрузка...</p></div>
+        <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:1.5rem;">
+          <button class="btn-primary" style="width:auto; padding:10px 24px;" onclick="switchLessonTab('practice')" data-i18n="lesson.to_practice">К практике →</button>
+        </div>
+      </div>
+      <div id="lesson-tab-practice" class="lesson-tab-content">
+        <div class="practice-task" id="practice-task" data-i18n="lesson.task_loading">Загрузка задания...</div>
+        <div class="practice-code" id="practice-code"></div>
+        <div class="practice-tokens" id="practice-tokens"></div>
+        <div id="practice-result" class="practice-result"></div>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:1rem;">
+          <button class="btn-submit" id="btn-practice-check" onclick="checkPractice()" data-i18n="lesson.check">Проверить</button>
+          <button class="btn-back" onclick="resetPractice()" style="padding:10px 16px;" data-i18n="lesson.reset">Сбросить</button>
+          <button class="btn-primary" style="width:auto; padding:10px 24px; margin-left:auto;" onclick="switchLessonTab('quiz')" data-i18n="lesson.to_quiz">К квизу →</button>
+        </div>
+      </div>
+      <div id="lesson-tab-quiz" class="lesson-tab-content">
+        <div class="quiz-block" style="margin-top:0;">
+          <h3 data-i18n="lesson.question_h">Вопрос</h3>
+          <div class="quiz-question" id="quiz-question-text">—</div>
+          <div class="quiz-options" id="quiz-options-list"></div>
+          <div id="quiz-result" class="quiz-result"></div>
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:1.5rem;">
+            <button class="btn-submit" id="btn-submit" onclick="doSubmit()" data-i18n="lesson.check">Проверить</button>
+            <button class="btn-next" id="btn-next" onclick="goNextLesson()" data-i18n="lesson.next">Следующий урок →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-progress" class="view">
+      <div class="page-header">
+        <div class="page-title" data-i18n="progress.title">Прогресс</div>
+        <div class="page-subtitle" data-i18n="progress.subtitle">История твоих ответов</div>
+      </div>
+      <div class="stat-card" style="margin-bottom:1.5rem;">
+        <div class="stat-label" style="margin-bottom:8px;" data-i18n="progress.general">Общий прогресс</div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-bar" style="width:0%"></div></div>
+        <div style="font-size:12px; color:var(--text3); margin-top:6px;" id="progress-pct">0%</div>
+      </div>
+      <div class="section-title" data-i18n="progress.history">История ответов</div>
+      <div id="progress-list" class="progress-list">
+        <div class="loading-state"><div class="spinner"></div><span>...</span></div>
+      </div>
+    </div>
+
     <div id="view-leaderboard" class="view">
       <div class="page-header">
-        <div class="page-title">Таблица лидеров</div>
-        <div class="page-subtitle">Топ 10 пользователей по XP</div>
+        <div class="page-title" data-i18n="leaderboard.title">Таблица лидеров</div>
+        <div class="page-subtitle" data-i18n="leaderboard.subtitle">Топ 10 пользователей по XP</div>
       </div>
       <div id="leaderboard-list" class="leaderboard-list">
-        <div class="loading-state">
-          <div class="spinner"></div>
-          <span>Загружаем...</span>
-        </div>
+        <div class="loading-state"><div class="spinner"></div><span>...</span></div>
       </div>
     </div>
 
-    <!-- Settings View -->
     <div id="view-settings" class="view">
       <div class="page-header">
-        <div class="page-title">Настройки</div>
-        <div class="page-subtitle">Управление профилем и аккаунтом</div>
+        <div class="page-title" data-i18n="settings.title">Настройки</div>
+        <div class="page-subtitle" data-i18n="settings.subtitle">Управление профилем и аккаунтом</div>
       </div>
       <div class="settings-section">
-        <div class="settings-section-title">Аватарка</div>
+        <div class="settings-section-title" data-i18n="settings.avatar">Аватарка</div>
         <div class="avatar-picker">
           <div class="avatar-preview" id="settings-avatar-preview">?</div>
           <div class="avatar-colors">
-            <div class="color-dot" style="background:#00d4a0" onclick="selectAvatarColor('#00d4a0', this)"></div>
+            <div class="color-dot" style="background:#5ed29c" onclick="selectAvatarColor('#5ed29c', this)"></div>
             <div class="color-dot" style="background:#00a0ff" onclick="selectAvatarColor('#00a0ff', this)"></div>
             <div class="color-dot" style="background:#ff5a6a" onclick="selectAvatarColor('#ff5a6a', this)"></div>
             <div class="color-dot" style="background:#ffaa00" onclick="selectAvatarColor('#ffaa00', this)"></div>
@@ -413,20 +661,20 @@
         </div>
       </div>
       <div class="settings-section">
-        <div class="settings-section-title">Основная информация</div>
+        <div class="settings-section-title" data-i18n="settings.basic">Основная информация</div>
         <div class="settings-form">
           <div class="form-group">
-            <label class="form-label">Никнейм</label>
-            <input class="form-input" type="text" id="settings-username" placeholder="Твой никнейм" />
+            <label class="form-label" data-i18n="settings.username">Никнейм</label>
+            <input class="form-input" type="text" id="settings-username" data-i18n="settings.username_ph" data-i18n-attr="placeholder" placeholder="Твой никнейм" />
           </div>
           <div class="form-group">
-            <label class="form-label">О себе</label>
-            <textarea class="form-input" id="settings-bio" placeholder="Расскажи о себе..." rows="3" style="resize:vertical;"></textarea>
+            <label class="form-label" data-i18n="settings.bio">О себе</label>
+            <textarea class="form-input" id="settings-bio" data-i18n="settings.bio_ph" data-i18n-attr="placeholder" placeholder="Расскажи о себе..." rows="3" style="resize:vertical;"></textarea>
           </div>
           <div class="form-group">
-            <label class="form-label">Страна</label>
+            <label class="form-label" data-i18n="settings.country">Страна</label>
             <select class="form-input" id="settings-country">
-              <option value="">Выбери страну</option>
+              <option value="" data-i18n="settings.country_ph">Выбери страну</option>
               <option value="Казахстан">🇰🇿 Казахстан</option>
               <option value="Россия">🇷🇺 Россия</option>
               <option value="Украина">🇺🇦 Украина</option>
@@ -436,35 +684,36 @@
               <option value="Другая">🌍 Другая</option>
             </select>
           </div>
-          <button class="btn-primary" style="width:auto; padding:10px 24px;" onclick="saveProfile()">Сохранить</button>
+          <button class="btn-primary" style="width:auto; padding:10px 24px;" onclick="saveProfile()" data-i18n="settings.save">Сохранить</button>
         </div>
       </div>
       <div class="settings-section">
-        <div class="settings-section-title">Безопасность</div>
+        <div class="settings-section-title" data-i18n="settings.security">Безопасность</div>
         <div class="settings-form">
           <div class="form-group">
-            <label class="form-label">Старый пароль</label>
+            <label class="form-label" data-i18n="settings.old_pass">Старый пароль</label>
             <input class="form-input" type="password" id="settings-old-pass" placeholder="••••••••" />
           </div>
           <div class="form-group">
-            <label class="form-label">Новый пароль</label>
-            <input class="form-input" type="password" id="settings-new-pass" placeholder="Минимум 6 символов" />
+            <label class="form-label" data-i18n="settings.new_pass">Новый пароль</label>
+            <input class="form-input" type="password" id="settings-new-pass" data-i18n="auth.password_hint" data-i18n-attr="placeholder" placeholder="Минимум 6 символов" />
           </div>
-          <button class="btn-primary" style="width:auto; padding:10px 24px; background:var(--bg3); color:var(--text); border:1px solid var(--border);" onclick="changePassword()">Сменить пароль</button>
+          <button class="btn-primary" style="width:auto; padding:10px 24px; background:var(--bg3); color:var(--text); border:1px solid var(--border);" onclick="changePassword()" data-i18n="settings.change_pass">Сменить пароль</button>
         </div>
       </div>
       <div class="settings-section">
-        <div class="settings-section-title">Аккаунт</div>
-        <button class="btn-danger" onclick="doLogout()">Выйти из аккаунта</button>
+        <div class="settings-section-title" data-i18n="settings.account">Аккаунт</div>
+        <button class="btn-danger" onclick="doLogout()" data-i18n="settings.logout">Выйти из аккаунта</button>
       </div>
     </div>
 
   </main>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
+<script src="i18n.js"></script>
+<script src="lessons-content.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
